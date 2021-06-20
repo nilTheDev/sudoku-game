@@ -5,10 +5,75 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:id="@+id/sudoku_fragment">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/squares"
+        android:layout_marginTop="@dimen/wideMargin"
+        android:layout_marginStart="@dimen/wideMargin">
+
+        <TextView
+            android:id="@+id/pos_0_0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_0_1"
+            app:layout_constraintStart_toEndOf="@id/pos_0_0"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_0_2"
+            app:layout_constraintStart_toEndOf="@id/pos_0_1"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_1_0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pos_0_0"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_1_1"
+            app:layout_constraintStart_toEndOf="@id/pos_1_0"
+            app:layout_constraintTop_toTopOf="@id/pos_1_0"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_1_2"
+            app:layout_constraintStart_toEndOf="@id/pos_1_1"
+            app:layout_constraintTop_toTopOf="@id/pos_1_0"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_2_0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pos_1_0"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_2_1"
+            app:layout_constraintStart_toEndOf="@id/pos_2_0"
+            app:layout_constraintTop_toTopOf="@id/pos_2_0"
+            style="@style/cell"
+            tools:text="5"/>
+        <TextView
+            android:id="@+id/pos_2_2"
+            app:layout_constraintStart_toEndOf="@id/pos_2_1"
+            app:layout_constraintTop_toTopOf="@id/pos_2_0"
+            style="@style/cell"
+            tools:text="5"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
