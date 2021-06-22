@@ -1,5 +1,6 @@
 package com.example.sudokugame
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import org.w3c.dom.Text
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 import android.view.ViewGroup.LayoutParams as VLParams
 
@@ -18,6 +22,7 @@ class SudokuFragment : Fragment() {
     private var inFocus = -1
     private lateinit var sudokuParent: LinearLayout
 
+    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,16 +31,17 @@ class SudokuFragment : Fragment() {
         sudokuParent = parent.findViewById(R.id.sudoku_wrapper)
 
         generateBox()
+        generateBoard()
 
         return parent
     }
 
-    private val generateBox = {for(i in 0..2) sudokuParent.addView(generateBoxSquare())}
+    private val generateBox = {for(i in 0..2) sudokuParent.addView(generateSquareRow())}
 
     // returns a row of a square
     // i.e three cells, properly marked with ids, horizontally aligned
     // and wrapped in a LinearLayout
-    private fun generateRow(): LinearLayout {
+    private fun generateCellRow(): LinearLayout {
         val linearLayout = LinearLayout(context)
         linearLayout.layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
         linearLayout.orientation = LinearLayout.HORIZONTAL
@@ -55,7 +61,7 @@ class SudokuFragment : Fragment() {
     // LinearLayout
     // i.e three squares horizontally aligned
     // uses generateRow() nine times
-    private fun generateBoxSquare(): LinearLayout {
+    private fun generateSquareRow(): LinearLayout {
         val parent = LinearLayout(context)
         // the parent layout for creating the box row
         parent.layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
@@ -64,7 +70,7 @@ class SudokuFragment : Fragment() {
         // the list would hold nine LinearLayout containing three cells each
         val rows = mutableListOf<LinearLayout>()
 
-        for(i in 0..8) rows.add(generateRow())
+        for(i in 0..8) rows.add(generateCellRow())
 
         for(i in 0..2){
             val square = LinearLayout(context)
@@ -91,5 +97,36 @@ class SudokuFragment : Fragment() {
     private val cellOnClickListener = {v: View ->
         deFocus()
         if(v is TextView) onFocus(v)
+    }
+
+    private fun generateBoard(){
+        for (i in 1000..1080 step 9){
+            val numOfCellsToFill = Random.nextInt(1..5)
+            val cellIndicesToFill = mutableSetOf<Int>()
+            val alreadyAddedValues = mutableSetOf<Int>()
+
+            for(j in 0 until numOfCellsToFill){
+                while(true){
+                    val currentRandomCell = Random.nextInt(0..8) + i
+                    if(currentRandomCell in cellIndicesToFill) continue
+                    else{
+                        cellIndicesToFill.add(currentRandomCell)
+                        break
+                    }
+                }
+            }
+
+            for(cell in cellIndicesToFill){
+                while(true){
+                    val currentRandomValue = Random.nextInt(0..9)
+                    if (currentRandomValue in alreadyAddedValues) continue
+                    else{
+                        sudokuParent.findViewById<TextView>(cell).text = currentRandomValue.toString()
+                        alreadyAddedValues.add(currentRandomValue)
+                        break
+                    }
+                }
+            }
+        }
     }
 }
