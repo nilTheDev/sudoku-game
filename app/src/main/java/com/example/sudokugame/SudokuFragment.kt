@@ -7,29 +7,87 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.DimenRes
-import androidx.core.view.marginStart
-import androidx.core.view.marginTop
-import android.view.ViewGroup.LayoutParams as GroupLayoutParams
-import java.util.*
 
+import android.view.ViewGroup.LayoutParams as VLParams
+
+const val TAG = "SUDOKUFRAGMENT"
 
 class SudokuFragment : Fragment() {
+
+    private var manualId = 1000
+    private var inFocus = -1
+    private lateinit var sudokuParent: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sudoku, container, false)
+    ): View {
+        sudokuParent = inflater.inflate(R.layout.fragment_sudoku, container, false)!! as LinearLayout
+
+        for(i in 0..2) sudokuParent.addView(generateBoxSquare())
+
+
+        return sudokuParent
     }
 
-    private fun getRow(): LinearLayout {
-        val layout = LinearLayout(context)
-        layout.layoutParams = GroupLayoutParams(GroupLayoutParams.WRAP_CONTENT, GroupLayoutParams.WRAP_CONTENT)
-        layout.orientation = LinearLayout.HORIZONTAL
+    // returns a row of a square
+    // i.e three cells, properly marked with ids, horizontally aligned
+    // and wrapped in a LinearLayout
+    private fun generateRow(): LinearLayout {
+        val linearLayout = LinearLayout(context)
+        linearLayout.layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
+        linearLayout.orientation = LinearLayout.HORIZONTAL
+
+        for (i in 0..2) {
+            val text = layoutInflater.inflate(R.layout.cells, linearLayout, false)
+            text.id = manualId++
+            text.setOnClickListener(cellOnClickListener)
+            linearLayout.addView(text)
+        }
 
 
+        return linearLayout
     }
 
+    // returns a row of the whole sudoku box wrapped in a
+    // LinearLayout
+    // i.e three squares horizontally aligned
+    // uses generateRow() nine times
+    private fun generateBoxSquare(): LinearLayout {
+        val parent = LinearLayout(context)
+        // the parent layout for creating the box row
+        parent.layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
+        parent.orientation = LinearLayout.HORIZONTAL
+
+        // the list would hold nine LinearLayout containing three cells each
+        val rows = mutableListOf<LinearLayout>()
+
+        for(i in 0..8) rows.add(generateRow())
+
+        for(i in 0..2){
+            val square = LinearLayout(context)
+            square.apply {
+                layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
+                orientation = LinearLayout.VERTICAL
+                setBackgroundResource(R.drawable.square_border)
+            }
+
+            for(j in i..8 step 3) square.addView(rows[j])
+            parent.addView(square)
+        }
+
+        return parent
+    }
+
+    private fun onFocus(v: TextView){
+        inFocus = v.id
+        v.setBackgroundResource(R.drawable.cell_onclick)
+    }
+
+    private val deFocus = {if(inFocus != -1) {sudokuParent.findViewById<TextView>(inFocus).setBackgroundResource(R.drawable.cell_border)}}
+
+    private val cellOnClickListener = {v: View ->
+        deFocus()
+        if(v is TextView) onFocus(v)
+    }
 }
