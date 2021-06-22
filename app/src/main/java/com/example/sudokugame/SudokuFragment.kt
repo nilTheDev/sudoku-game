@@ -22,13 +22,15 @@ class SudokuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        sudokuParent = inflater.inflate(R.layout.fragment_sudoku, container, false)!! as LinearLayout
+        val parent = inflater.inflate(R.layout.fragment_sudoku, container, false)
+        sudokuParent = parent.findViewById(R.id.sudoku_wrapper)
 
-        for(i in 0..2) sudokuParent.addView(generateBoxSquare())
+        generateBox()
 
-
-        return sudokuParent
+        return parent
     }
+
+    private val generateBox = {for(i in 0..2) sudokuParent.addView(generateBoxSquare())}
 
     // returns a row of a square
     // i.e three cells, properly marked with ids, horizontally aligned

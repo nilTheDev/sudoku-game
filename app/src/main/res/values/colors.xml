@@ -7,5 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="cell_border">#444543</color>
+    <color name="cell_border">#375F1B</color>
+    <color name="square_border">#1B3409</color>
+    <color name="cell_default_fill">#EBF7E3</color>
+    <color name="cell_clicked_border">#347B98</color>
+    <color name="cell_clicked_fill">#9BD770</color>
 </resources>
