@@ -99,32 +99,40 @@ class SudokuFragment : Fragment() {
         if(v is TextView) onFocus(v)
     }
 
+    // fills the preliminary cells to make the game playable
+    // uses random algorithm heavily
+    // iterates over all the rows
+    // randomly decides how many cells to fill
+    // randomly decides which cells to fill
+    // fills the cells with randomly generated integers
     private fun generateBoard(){
+        // iterating each row
         for (i in 1000..1080 step 9){
             val numOfCellsToFill = Random.nextInt(1..5)
             val cellIndicesToFill = mutableSetOf<Int>()
             val alreadyAddedValues = mutableSetOf<Int>()
 
+            // generate the cells that would be filled
             for(j in 0 until numOfCellsToFill){
                 while(true){
                     val currentRandomCell = Random.nextInt(0..8) + i
-                    if(currentRandomCell in cellIndicesToFill) continue
-                    else{
+                    if(currentRandomCell !in cellIndicesToFill){
                         cellIndicesToFill.add(currentRandomCell)
                         break
                     }
                 }
             }
 
+            // filling the cells
             for(cell in cellIndicesToFill){
                 while(true){
                     val currentRandomValue = Random.nextInt(0..9)
-                    if (currentRandomValue in alreadyAddedValues) continue
-                    else{
+                    if (currentRandomValue !in alreadyAddedValues){
                         sudokuParent.findViewById<TextView>(cell).text = currentRandomValue.toString()
                         alreadyAddedValues.add(currentRandomValue)
                         break
                     }
+
                 }
             }
         }
