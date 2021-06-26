@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import java.lang.IllegalStateException
-import java.lang.NullPointerException
 import kotlin.random.Random
 import kotlin.random.nextInt
 
-class Sudoku (private val sudokuParent: ViewGroup, private val context: Context, private val layoutInflater: LayoutInflater){
+class Sudoku(
+    private val sudokuParent: ViewGroup,
+    private val context: Context,
+    private val layoutInflater: LayoutInflater
+) {
 
 
     private var manualId = 1000
@@ -23,16 +25,23 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     }
     private val initialisedCells = mutableSetOf<Int>()
 
-    init{
+    init {
         generateBox()
+
+        while (true) {
+            val randomCell = Random.nextInt(1000..1080)
+            if (randomCell in initialisedCells) continue
+            gainFocus(randomCell)
+            break
+        }
     }
 
     // generate the whole sudoku box by
     // generating three rows of three squares each
     // and adding it into the LinearLayout of the view
-
     private fun generateBox() {
-        for(i in 0..2) sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper).addView(generateSquareRow())
+        for (i in 0..2) sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper)
+            .addView(generateSquareRow())
         autoFillPreliminaryValues()
     }
 
@@ -42,7 +51,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     // and wrapped in a LinearLayout
     private fun generateCellRow(): LinearLayout {
         val parentLayout = LinearLayout(context)
-        parentLayout.apply{
+        parentLayout.apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -67,7 +76,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     private fun generateSquareRow(): LinearLayout {
         val parentLayout = LinearLayout(context)
         // the parent layout for creating the box row
-        parentLayout.apply{
+        parentLayout.apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -78,9 +87,9 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         // the list would hold nine LinearLayouts containing three cells each
         val rows = mutableListOf<LinearLayout>()
 
-        for(i in 0..8) rows.add(generateCellRow())
+        for (i in 0..8) rows.add(generateCellRow())
 
-        for(i in 0..2){
+        for (i in 0..2) {
             val square = LinearLayout(context)
             square.apply {
                 layoutParams = ViewGroup.LayoutParams(
@@ -91,7 +100,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
                 setBackgroundResource(R.drawable.square_border)
             }
 
-            for(j in i..8 step 3) square.addView(rows[j])
+            for (j in i..8 step 3) square.addView(rows[j])
             parentLayout.addView(square)
         }
 
@@ -105,17 +114,17 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     // randomly decides which cells to fill
     // fills the cells with randomly generated integers
     // uses Sudoku.isValidInput to avoid repetition
-    private fun autoFillPreliminaryValues(){
+    private fun autoFillPreliminaryValues() {
         // iterating each row
-        for (i in 1000..1080 step 9){
+        for (i in 1000..1080 step 9) {
             val numOfCellsToFill = Random.nextInt(1..5)
             val cellIndicesToFill = mutableSetOf<Int>()
 
             // generate the cells that would be filled
-            for(j in 1..numOfCellsToFill){
-                while(true){
+            for (j in 1..numOfCellsToFill) {
+                while (true) {
                     val currentRandomCell = Random.nextInt(0..8) + i
-                    if(currentRandomCell !in cellIndicesToFill){
+                    if (currentRandomCell !in cellIndicesToFill) {
                         cellIndicesToFill.add(currentRandomCell)
                         break
                     }
@@ -123,12 +132,12 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
             }
 
             // filling the cells
-            for(cell in cellIndicesToFill){
-                while(true){
+            for (cell in cellIndicesToFill) {
+                while (true) {
                     val currentRandomValue = Random.nextInt(1..9)
-                    if (Sudoku.isValidInput(sudokuParent, cell, currentRandomValue)){
+                    if (Sudoku.isValidInput(sudokuParent, cell, currentRandomValue)) {
 
-                        sudokuParent.findViewById<TextView>(cell).apply{
+                        sudokuParent.findViewById<TextView>(cell).apply {
                             text = currentRandomValue.toString()
                             setTypeface(null, Typeface.BOLD)
                         }
@@ -143,7 +152,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
 
     // saves the previous style of the cell in the inFocus object
     // and switches the style to cell_infocus
-    private fun gainFocus(cellId: Int){
+    private fun gainFocus(cellId: Int) {
         // whether the user clicked a cell
         // that was automatically initialised
         if (cellId in initialisedCells) return
@@ -152,7 +161,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
 
         // make the inFocus object point the
         // current cell
-        inFocus.apply{
+        inFocus.apply {
             id = view.id
             background = view.background
         }
@@ -167,14 +176,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     private fun loseFocus() {
         // switch the style of cell that was already inFocused
         // form inFocus to default/right/wrong
-        inFocus.apply {
-            try {
-                sudokuParent.findViewById<TextView>(id!!).background = background
-            }
-            catch(e: NullPointerException){
-                return
-            }
-        }
+        sudokuParent.findViewById<TextView>(inFocus.id!!).background = inFocus.background
     }
 
     // de focus the cell that was previously inFocused
@@ -183,26 +185,28 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         // deFocus from the cell that is already in focus
         loseFocus()
         // inFocus the currently clicked object
-        if(cell is TextView) gainFocus(cell.id)
+        if (cell is TextView) gainFocus(cell.id)
     }
 
 
     // click listener for the input panel
-    fun cellInputListener(inputId: Int){
-        val view = sudokuParent.findViewById<TextView>(inputId)
+    fun cellInputListener(inputId: Int) {
+        val inputBtn = sudokuParent.findViewById<TextView>(inputId)
 
-        try {
-            sudokuParent.findViewById<TextView>(inFocus.id!!).apply{
-                text = view.text
-                if(Sudoku.isValidInput(sudokuParent, id, view.text.toString().toInt())) setBackgroundResource(R.drawable.cell_right)
-                else setBackgroundResource(R.drawable.cell_wrong)
 
-                inFocus.background = background
-            }
+        sudokuParent.findViewById<TextView>(inFocus.id!!).apply {
+            text = inputBtn.text
+            if (isValidInput(
+                    sudokuParent,
+                    id,
+                    inputBtn.text.toString().toInt()
+                )
+            ) setBackgroundResource(R.drawable.cell_right)
+            else setBackgroundResource(R.drawable.cell_wrong)
+
+            inFocus.background = background
         }
-        catch (e: NullPointerException) {
-            return
-        }
+
     }
 
     companion object {
@@ -217,17 +221,18 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
             setOf(1057, 1058, 1059, 1066, 1067, 1068, 1075, 1076, 1077),
             setOf(1060, 1061, 1062, 1069, 1070, 1071, 1078, 1079, 1080)
         )
-        fun isValidInput(sudokuParent: ViewGroup, cellId: Int, input: Int): Boolean{
+
+        fun isValidInput(sudokuParent: ViewGroup, cellId: Int, input: Int): Boolean {
             // iterate the rows
-            for(i in 1000..1080 step 9){
+            for (i in 1000..1080 step 9) {
                 // whether the cellId in the current row
-                if(cellId in i..(i + 8)){
+                if (cellId in i..(i + 8)) {
                     // as the row is found
                     // inspect the cells of the row
-                    for(j in i..(i + 8)){
+                    for (j in i..(i + 8)) {
                         // skip the proposed cellId
                         if (j == cellId) continue
-                        if(sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
+                        if (sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
                     }
                     // the proposed input does not have any row-wise repetition
                     // so break out from the loop to continue the inspection
@@ -237,15 +242,15 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
             }
 
             // iterate the columns
-            for(i in 1000..1008){
+            for (i in 1000..1008) {
                 // whether the cellId is in the current column
-                if(cellId in i..(i + 72) step 9){
+                if (cellId in i..(i + 72) step 9) {
                     // as the column is found
                     // inspect the cells of the entire column
-                    for(j in i..(i + 72) step 9){
+                    for (j in i..(i + 72) step 9) {
                         // skip the proposed cellId
-                        if(j == cellId) continue
-                        if(sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
+                        if (j == cellId) continue
+                        if (sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
                     }
                     // the proposed input does not have any column-wise repetition
                     // so break out from the loop to continue the inspection
@@ -255,14 +260,14 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
             }
 
             // iterate the squares
-            for(square in squares){
+            for (square in squares) {
                 // whether the cellId is in the current square
-                if(cellId in square){
+                if (cellId in square) {
                     // inspect all the cells of the square
-                    for(cell in square){
+                    for (cell in square) {
                         // skip the proposed cellId
-                        if(cell == cellId) continue
-                        if(sudokuParent.findViewById<TextView>(cell).text == input.toString()) return false
+                        if (cell == cellId) continue
+                        if (sudokuParent.findViewById<TextView>(cell).text == input.toString()) return false
                     }
                     // as there is no repetition of the proposed input
                     // in the square, break out from the loop
