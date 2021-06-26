@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import kotlin.properties.Delegates
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -18,7 +19,7 @@ class Sudoku(
 ) {
 
 
-    private var manualId = 1000
+    private var manualId by Delegates.notNull<Int>()
     private val inFocus = object {
         var id: Int? = null
         var background: Drawable? = null
@@ -36,10 +37,16 @@ class Sudoku(
         }
     }
 
+    val generateFreshBox
+        get() = { _:View ->
+            sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper).removeAllViews()
+            generateBox()}
+
     // generate the whole sudoku box by
     // generating three rows of three squares each
     // and adding it into the LinearLayout of the view
     private fun generateBox() {
+        manualId = 1000
         for (i in 0..2) sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper)
             .addView(generateSquareRow())
         autoFillPreliminaryValues()
