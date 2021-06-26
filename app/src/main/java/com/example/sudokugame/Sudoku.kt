@@ -1,11 +1,16 @@
 package com.example.sudokugame
 
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import org.w3c.dom.Text
 import java.lang.IllegalStateException
 import java.lang.NullPointerException
+import java.util.zip.Inflater
 
 class Sudoku (private val sudokuParent: ViewGroup){
     private var manualId = 1000
@@ -15,14 +20,39 @@ class Sudoku (private val sudokuParent: ViewGroup){
     }
     private val initialisedCells = mutableSetOf<Int>()
 
-
-    private fun gainFocus(v: TextView){
-        if (v.id in initialisedCells) return
-        inFocus.apply{
-            id = v.id
-            background = v.background
+    // returns a row of a square
+    // i.e three cells, properly marked with ids, horizontally aligned
+    // and wrapped in a LinearLayout
+    private fun generateCellRow(context: Context, layoutInflater: LayoutInflater): LinearLayout {
+        val linearLayout = LinearLayout(context)
+        linearLayout.apply{
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            orientation = LinearLayout.HORIZONTAL
         }
-        v.setBackgroundResource(R.drawable.cell_infocus)
+
+        for (i in 0..2) {
+            val text = layoutInflater.inflate(R.layout.cells, linearLayout, false)
+            text.id = manualId++
+//            text.setOnClickListener(cellOnClickListener)
+            linearLayout.addView(text)
+        }
+
+
+        return linearLayout
+    }
+
+    fun gainFocus(cellId: Int){
+        if (cellId in initialisedCells) return
+        val view = sudokuParent.findViewById<TextView>(cellId)
+        inFocus.apply{
+            id = view.id
+            background = view.background
+        }
+        view.setBackgroundResource(R.drawable.cell_infocus)
+
     }
 
     fun loseFocus() {
@@ -34,6 +64,23 @@ class Sudoku (private val sudokuParent: ViewGroup){
                 throw IllegalStateException("no cell is in focus", NullPointerException())
             }
         }
+    }
+
+    // click listener for the input panel
+    fun cellInput(cellId: Int){
+
+        val view = sudokuParent.findViewById<TextView>(cellId)
+
+        sudokuParent.findViewById<TextView>(inFocus.id!!).apply{
+            text = view.text
+
+
+            if(Sudoku.isValidInput(sudokuParent, id, view.text.toString().toInt())) setBackgroundResource(R.drawable.cell_right)
+            else setBackgroundResource(R.drawable.cell_wrong)
+
+            inFocus.background = background
+        }
+
     }
 
     companion object {
@@ -48,7 +95,7 @@ class Sudoku (private val sudokuParent: ViewGroup){
             setOf(1057, 1058, 1059, 1066, 1067, 1068, 1075, 1076, 1077),
             setOf(1060, 1061, 1062, 1069, 1070, 1071, 1078, 1079, 1080)
         )
-        fun isValidInput(sudokuParent: LinearLayout, cellId: Int, input: Int): Boolean{
+        fun isValidInput(sudokuParent: ViewGroup, cellId: Int, input: Int): Boolean{
             // iterate the rows
             for(i in 1000..1080 step 9){
                 // whether the cellId in the current row

@@ -44,29 +44,29 @@ class SudokuFragment : Fragment() {
 
     private val generateBox = {for(i in 0..2) sudokuParent.addView(generateSquareRow())}
 
-    // returns a row of a square
-    // i.e three cells, properly marked with ids, horizontally aligned
-    // and wrapped in a LinearLayout
-    private fun generateCellRow(): LinearLayout {
-        val linearLayout = LinearLayout(context)
-        linearLayout.apply{
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            orientation = LinearLayout.HORIZONTAL
-        }
-
-        for (i in 0..2) {
-            val text = layoutInflater.inflate(R.layout.cells, linearLayout, false)
-            text.id = manualId++
-            text.setOnClickListener(cellOnClickListener)
-            linearLayout.addView(text)
-        }
-
-
-        return linearLayout
-    }
+//    // returns a row of a square
+//    // i.e three cells, properly marked with ids, horizontally aligned
+//    // and wrapped in a LinearLayout
+//    private fun generateCellRow(): LinearLayout {
+//        val linearLayout = LinearLayout(context)
+//        linearLayout.apply{
+//            layoutParams = ViewGroup.LayoutParams(
+//                ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT
+//            )
+//            orientation = LinearLayout.HORIZONTAL
+//        }
+//
+//        for (i in 0..2) {
+//            val text = layoutInflater.inflate(R.layout.cells, linearLayout, false)
+//            text.id = manualId++
+//            text.setOnClickListener(cellOnClickListener)
+//            linearLayout.addView(text)
+//        }
+//
+//
+//        return linearLayout
+//    }
 
     // returns a row of the whole sudoku box wrapped in a
     // LinearLayout
@@ -122,22 +122,7 @@ class SudokuFragment : Fragment() {
         }
     }
 
-    // click listener for the input panel
-    fun inputOnClickListener(v: View){
-        if(inFocus.id == -1) return
-        if(v !is TextView) return
 
-        sudokuParent.findViewById<TextView>(inFocus.id).apply{
-            text = v.text
-
-
-            if(Sudoku.isValidInput(sudokuParent, id, v.text.toString().toInt())) setBackgroundResource(R.drawable.cell_right)
-            else setBackgroundResource(R.drawable.cell_wrong)
-
-            inFocus.previousBackground = background
-        }
-
-    }
 
     // fills the preliminary cells to make the game playable
     // uses random algorithm heavily
