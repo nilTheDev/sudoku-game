@@ -68,37 +68,37 @@ class SudokuFragment : Fragment() {
 //        return linearLayout
 //    }
 
-    // returns a row of the whole sudoku box wrapped in a
-    // LinearLayout
-    // i.e three squares horizontally aligned
-    // uses generateRow() nine times
-    private fun generateSquareRow(): LinearLayout {
-        val parent = LinearLayout(context)
-        // the parent layout for creating the box row
-        parent.apply{
-            layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
-            orientation = LinearLayout.HORIZONTAL
-        }
-
-        // the list would hold nine LinearLayouts containing three cells each
-        val rows = mutableListOf<LinearLayout>()
-
-        for(i in 0..8) rows.add(generateCellRow())
-
-        for(i in 0..2){
-            val square = LinearLayout(context)
-            square.apply {
-                layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
-                orientation = LinearLayout.VERTICAL
-                setBackgroundResource(R.drawable.square_border)
-            }
-
-            for(j in i..8 step 3) square.addView(rows[j])
-            parent.addView(square)
-        }
-
-        return parent
-    }
+//    // returns a row of the whole sudoku box wrapped in a
+//    // LinearLayout
+//    // i.e three squares horizontally aligned
+//    // uses generateRow() nine times
+//    private fun generateSquareRow(): LinearLayout {
+//        val parent = LinearLayout(context)
+//        // the parent layout for creating the box row
+//        parent.apply{
+//            layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
+//            orientation = LinearLayout.HORIZONTAL
+//        }
+//
+//        // the list would hold nine LinearLayouts containing three cells each
+//        val rows = mutableListOf<LinearLayout>()
+//
+//        for(i in 0..8) rows.add(generateCellRow())
+//
+//        for(i in 0..2){
+//            val square = LinearLayout(context)
+//            square.apply {
+//                layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
+//                orientation = LinearLayout.VERTICAL
+//                setBackgroundResource(R.drawable.square_border)
+//            }
+//
+//            for(j in i..8 step 3) square.addView(rows[j])
+//            parent.addView(square)
+//        }
+//
+//        return parent
+//    }
 
 
 
