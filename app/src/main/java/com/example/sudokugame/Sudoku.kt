@@ -135,7 +135,7 @@ class Sudoku(
             for (cell in cellIndicesToFill) {
                 while (true) {
                     val currentRandomValue = Random.nextInt(1..9)
-                    if (Sudoku.isValidInput(sudokuParent, cell, currentRandomValue)) {
+                    if (isValidInput(sudokuParent, cell, currentRandomValue)) {
 
                         sudokuParent.findViewById<TextView>(cell).apply {
                             text = currentRandomValue.toString()
@@ -188,6 +188,11 @@ class Sudoku(
         if (cell is TextView) gainFocus(cell.id)
     }
 
+//    private fun refresh(){
+//        for(i in 1000..1080){
+//
+//        }
+//    }
 
     // click listener for the input panel
     fun cellInputListener(inputId: Int) {
@@ -209,8 +214,9 @@ class Sudoku(
 
     }
 
-    companion object {
-        private val squares = setOf(
+    private fun isValidInput(sudokuParent: ViewGroup, cellId: Int, input: Int): Boolean {
+
+        val squares = setOf(
             setOf(1000, 1001, 1002, 1009, 1010, 1011, 1018, 1019, 1020),
             setOf(1003, 1004, 1005, 1012, 1013, 1014, 1021, 1022, 1023),
             setOf(1006, 1007, 1008, 1015, 1016, 1017, 1024, 1025, 1026),
@@ -222,62 +228,62 @@ class Sudoku(
             setOf(1060, 1061, 1062, 1069, 1070, 1071, 1078, 1079, 1080)
         )
 
-        fun isValidInput(sudokuParent: ViewGroup, cellId: Int, input: Int): Boolean {
-            // iterate the rows
-            for (i in 1000..1080 step 9) {
-                // whether the cellId in the current row
-                if (cellId in i..(i + 8)) {
-                    // as the row is found
-                    // inspect the cells of the row
-                    for (j in i..(i + 8)) {
-                        // skip the proposed cellId
-                        if (j == cellId) continue
-                        if (sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
-                    }
-                    // the proposed input does not have any row-wise repetition
-                    // so break out from the loop to continue the inspection
-                    // with the columns and squares
-                    break
+        // iterate the rows
+        for (i in 1000..1080 step 9) {
+            // whether the cellId in the current row
+            if (cellId in i..(i + 8)) {
+                // as the row is found
+                // inspect the cells of the row
+                for (j in i..(i + 8)) {
+                    // skip the proposed cellId
+                    if (j == cellId) continue
+                    if (sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
                 }
+                // the proposed input does not have any row-wise repetition
+                // so break out from the loop to continue the inspection
+                // with the columns and squares
+                break
             }
-
-            // iterate the columns
-            for (i in 1000..1008) {
-                // whether the cellId is in the current column
-                if (cellId in i..(i + 72) step 9) {
-                    // as the column is found
-                    // inspect the cells of the entire column
-                    for (j in i..(i + 72) step 9) {
-                        // skip the proposed cellId
-                        if (j == cellId) continue
-                        if (sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
-                    }
-                    // the proposed input does not have any column-wise repetition
-                    // so break out from the loop to continue the inspection
-                    // with the squares
-                    break
-                }
-            }
-
-            // iterate the squares
-            for (square in squares) {
-                // whether the cellId is in the current square
-                if (cellId in square) {
-                    // inspect all the cells of the square
-                    for (cell in square) {
-                        // skip the proposed cellId
-                        if (cell == cellId) continue
-                        if (sudokuParent.findViewById<TextView>(cell).text == input.toString()) return false
-                    }
-                    // as there is no repetition of the proposed input
-                    // in the square, break out from the loop
-                    // the input number is perfectly valid
-                    break
-                }
-            }
-
-            return true
-
         }
+
+        // iterate the columns
+        for (i in 1000..1008) {
+            // whether the cellId is in the current column
+            if (cellId in i..(i + 72) step 9) {
+                // as the column is found
+                // inspect the cells of the entire column
+                for (j in i..(i + 72) step 9) {
+                    // skip the proposed cellId
+                    if (j == cellId) continue
+                    if (sudokuParent.findViewById<TextView>(j).text == input.toString()) return false
+                }
+                // the proposed input does not have any column-wise repetition
+                // so break out from the loop to continue the inspection
+                // with the squares
+                break
+            }
+        }
+
+        // iterate the squares
+        for (square in squares) {
+            // whether the cellId is in the current square
+            if (cellId in square) {
+                // inspect all the cells of the square
+                for (cell in square) {
+                    // skip the proposed cellId
+                    if (cell == cellId) continue
+                    if (sudokuParent.findViewById<TextView>(cell).text == input.toString()) return false
+                }
+                // as there is no repetition of the proposed input
+                // in the square, break out from the loop
+                // the input number is perfectly valid
+                break
+            }
+        }
+
+        return true
+
     }
+
+
 }
