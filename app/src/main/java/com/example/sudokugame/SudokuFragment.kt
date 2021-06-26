@@ -14,18 +14,16 @@ const val TAG = "SUDOKUFRAGMENT"
 
 class SudokuFragment : Fragment() {
 
+    private lateinit var sudoku: Sudoku
+
     @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val parent = inflater.inflate(R.layout.fragment_sudoku, container, false)
-        sudokuParent = parent.findViewById(R.id.sudoku_wrapper)
-
-        generateBox()
-        generateBoard()
+        val parent = inflater.inflate(R.layout.fragment_sudoku, container, false) as ViewGroup
+        sudoku = Sudoku(parent, requireContext(), inflater)
         setInputOnClickListeners(parent)
-
         return parent
     }
 
@@ -95,17 +93,18 @@ class SudokuFragment : Fragment() {
 //    }
 
 
-    private fun setInputOnClickListeners(parentLayout: View){
+    private fun setInputOnClickListeners(parentLayout: ViewGroup){
+        val cellInputListener = {inputButton: View -> sudoku.cellInputListener(inputButton.id)}
         parentLayout.apply{
-            findViewById<TextView>(R.id.key_1).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_2).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_3).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_4).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_5).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_6).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_7).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_8).setOnClickListener(::inputOnClickListener)
-            findViewById<TextView>(R.id.key_9).setOnClickListener(::inputOnClickListener)
+            findViewById<TextView>(R.id.key_1).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_2).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_3).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_4).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_5).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_6).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_7).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_8).setOnClickListener(cellInputListener)
+            findViewById<TextView>(R.id.key_9).setOnClickListener(cellInputListener)
         }
     }
 

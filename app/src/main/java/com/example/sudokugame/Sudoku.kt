@@ -23,11 +23,15 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     }
     private val initialisedCells = mutableSetOf<Int>()
 
+    init{
+        generateBox()
+    }
+
     // generate the whole sudoku box by
     // generating three rows of three squares each
     // and adding it into the LinearLayout of the view
 
-    fun generateBox() {
+    private fun generateBox() {
         for(i in 0..2) sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper).addView(generateSquareRow())
         autoFillPreliminaryValues()
     }
@@ -184,14 +188,12 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
 
 
     // click listener for the input panel
-    fun cellInput(inputId: Int){
+    fun cellInputListener(inputId: Int){
         val view = sudokuParent.findViewById<TextView>(inputId)
 
         try {
             sudokuParent.findViewById<TextView>(inFocus.id!!).apply{
                 text = view.text
-
-
                 if(Sudoku.isValidInput(sudokuParent, id, view.text.toString().toInt())) setBackgroundResource(R.drawable.cell_right)
                 else setBackgroundResource(R.drawable.cell_wrong)
 
