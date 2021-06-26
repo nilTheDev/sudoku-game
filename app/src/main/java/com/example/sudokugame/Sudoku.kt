@@ -135,7 +135,7 @@ class Sudoku(
             for (cell in cellIndicesToFill) {
                 while (true) {
                     val currentRandomValue = Random.nextInt(1..9)
-                    if (isValidInput(sudokuParent, cell, currentRandomValue)) {
+                    if (isValidInput(cell, currentRandomValue)) {
 
                         sudokuParent.findViewById<TextView>(cell).apply {
                             text = currentRandomValue.toString()
@@ -188,33 +188,36 @@ class Sudoku(
         if (cell is TextView) gainFocus(cell.id)
     }
 
-//    private fun refresh(){
-//        for(i in 1000..1080){
-//
-//        }
-//    }
+    // iterates all the cells
+    // validate in user inputs
+    // sets background accordingly
+    private fun refreshBoard() {
+        for (i in 1000..1080) {
+            val cell = sudokuParent.findViewById<TextView>(i)
+            if (i in initialisedCells || cell.text.toString() == "") continue
+
+            if (isValidInput(
+                    i,
+                    cell.text.toString().toInt()
+                )
+            ) cell.setBackgroundResource(R.drawable.cell_right)
+            else cell.setBackgroundResource(R.drawable.cell_wrong)
+
+            if(inFocus.id == cell.id) inFocus.background = cell.background
+        }
+    }
 
     // click listener for the input panel
     fun cellInputListener(inputId: Int) {
         val inputBtn = sudokuParent.findViewById<TextView>(inputId)
-
-
         sudokuParent.findViewById<TextView>(inFocus.id!!).apply {
             text = inputBtn.text
-            if (isValidInput(
-                    sudokuParent,
-                    id,
-                    inputBtn.text.toString().toInt()
-                )
-            ) setBackgroundResource(R.drawable.cell_right)
-            else setBackgroundResource(R.drawable.cell_wrong)
-
-            inFocus.background = background
+            refreshBoard()
         }
 
     }
 
-    private fun isValidInput(sudokuParent: ViewGroup, cellId: Int, input: Int): Boolean {
+    private fun isValidInput(cellId: Int, input: Int): Boolean {
 
         val squares = setOf(
             setOf(1000, 1001, 1002, 1009, 1010, 1011, 1018, 1019, 1020),
