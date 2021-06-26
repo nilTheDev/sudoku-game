@@ -3,13 +3,13 @@
     <style name="cell">
         <item name="android:layout_width">38dp</item>
         <item name="android:layout_height">38dp</item>
-        <item name="android:background">@drawable/cell_border</item>
+        <item name="android:background">@drawable/cell_defult</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">22sp</item>
         <item name="color">@color/cell_text_color</item>
     </style>
-    <style name="input_cells">
 
+    <style name="input_cells">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">55dp</item>
