@@ -1,6 +1,7 @@
 package com.example.sudokugame
 
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +12,25 @@ import org.w3c.dom.Text
 import java.lang.IllegalStateException
 import java.lang.NullPointerException
 import java.util.zip.Inflater
+import kotlin.random.Random
+import kotlin.random.nextInt
 
-class Sudoku (private val sudokuParent: ViewGroup){
+class Sudoku (private val sudokuParent: ViewGroup, private val context: Context, private val layoutInflater: LayoutInflater){
+
+
     private var manualId = 1000
     private val inFocus = object {
         var id: Int? = null
         var background: Drawable? = null
     }
     private val initialisedCells = mutableSetOf<Int>()
+    val generateBox = {for(i in 0..2) sudokuParent.addView(generateSquareRow())}
+
 
     // returns a row of a square
     // i.e three cells, properly marked with ids, horizontally aligned
     // and wrapped in a LinearLayout
-    private fun generateCellRow(context: Context, layoutInflater: LayoutInflater): LinearLayout {
+    private fun generateCellRow(): LinearLayout {
         val linearLayout = LinearLayout(context)
         linearLayout.apply{
             layoutParams = ViewGroup.LayoutParams(
@@ -47,7 +54,7 @@ class Sudoku (private val sudokuParent: ViewGroup){
     // LinearLayout
     // i.e three squares horizontally aligned
     // uses generateRow() nine times
-    private fun generateSquareRow(context: Context, layoutInflater: LayoutInflater): LinearLayout {
+    private fun generateSquareRow(): LinearLayout {
         val parent = LinearLayout(context)
         // the parent layout for creating the box row
         parent.apply{
@@ -61,7 +68,7 @@ class Sudoku (private val sudokuParent: ViewGroup){
         // the list would hold nine LinearLayouts containing three cells each
         val rows = mutableListOf<LinearLayout>()
 
-        for(i in 0..8) rows.add(generateCellRow(context, layoutInflater))
+        for(i in 0..8) rows.add(generateCellRow())
 
         for(i in 0..2){
             val square = LinearLayout(context)
@@ -79,6 +86,49 @@ class Sudoku (private val sudokuParent: ViewGroup){
         }
 
         return parent
+    }
+
+    // fills the preliminary cells to make the game playable
+    // uses random algorithm heavily
+    // iterates over all the rows
+    // randomly decides how many cells to fill
+    // randomly decides which cells to fill
+    // fills the cells with randomly generated integers
+    // uses Sudoku.isValidInput to avoid repetition
+    private fun generateBoard(){
+        // iterating each row
+        for (i in 1000..1080 step 9){
+            val numOfCellsToFill = Random.nextInt(1..5)
+            val cellIndicesToFill = mutableSetOf<Int>()
+
+            // generate the cells that would be filled
+            for(j in 1..numOfCellsToFill){
+                while(true){
+                    val currentRandomCell = Random.nextInt(0..8) + i
+                    if(currentRandomCell !in cellIndicesToFill){
+                        cellIndicesToFill.add(currentRandomCell)
+                        break
+                    }
+                }
+            }
+
+            // filling the cells
+            for(cell in cellIndicesToFill){
+                while(true){
+                    val currentRandomValue = Random.nextInt(1..9)
+                    if (Sudoku.isValidInput(sudokuParent, cell, currentRandomValue)){
+
+                        sudokuParent.findViewById<TextView>(cell).apply{
+                            text = currentRandomValue.toString()
+                            setTypeface(null, Typeface.BOLD)
+                        }
+                        break
+                    }
+
+                }
+            }
+            initialisedCells.addAll(cellIndicesToFill)
+        }
     }
 
     fun gainFocus(cellId: Int){

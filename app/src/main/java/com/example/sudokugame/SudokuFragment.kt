@@ -42,7 +42,7 @@ class SudokuFragment : Fragment() {
         return parent
     }
 
-    private val generateBox = {for(i in 0..2) sudokuParent.addView(generateSquareRow())}
+//    private val generateBox = {for(i in 0..2) sudokuParent.addView(generateSquareRow())}
 
 //    // returns a row of a square
 //    // i.e three cells, properly marked with ids, horizontally aligned
@@ -124,46 +124,46 @@ class SudokuFragment : Fragment() {
 
 
 
-    // fills the preliminary cells to make the game playable
-    // uses random algorithm heavily
-    // iterates over all the rows
-    // randomly decides how many cells to fill
-    // randomly decides which cells to fill
-    // fills the cells with randomly generated integers
-    // uses Sudoku.isValidInput to avoid repetition
-    private fun generateBoard(){
-        // iterating each row
-        for (i in 1000..1080 step 9){
-            val numOfCellsToFill = Random.nextInt(1..5)
-            val cellIndicesToFill = mutableSetOf<Int>()
-
-            // generate the cells that would be filled
-            for(j in 1..numOfCellsToFill){
-                while(true){
-                    val currentRandomCell = Random.nextInt(0..8) + i
-                    if(currentRandomCell !in cellIndicesToFill){
-                        cellIndicesToFill.add(currentRandomCell)
-                        break
-                    }
-                }
-            }
-
-            // filling the cells
-            for(cell in cellIndicesToFill){
-                while(true){
-                    val currentRandomValue = Random.nextInt(1..9)
-                    if (Sudoku.isValidInput(sudokuParent, cell, currentRandomValue)){
-
-                        sudokuParent.findViewById<TextView>(cell).apply{
-                            text = currentRandomValue.toString()
-                            setTypeface(null, Typeface.BOLD)
-                        }
-                        break
-                    }
-
-                }
-            }
-            initialisedCells.addAll(cellIndicesToFill)
-        }
-    }
+//    // fills the preliminary cells to make the game playable
+//    // uses random algorithm heavily
+//    // iterates over all the rows
+//    // randomly decides how many cells to fill
+//    // randomly decides which cells to fill
+//    // fills the cells with randomly generated integers
+//    // uses Sudoku.isValidInput to avoid repetition
+//    private fun generateBoard(){
+//        // iterating each row
+//        for (i in 1000..1080 step 9){
+//            val numOfCellsToFill = Random.nextInt(1..5)
+//            val cellIndicesToFill = mutableSetOf<Int>()
+//
+//            // generate the cells that would be filled
+//            for(j in 1..numOfCellsToFill){
+//                while(true){
+//                    val currentRandomCell = Random.nextInt(0..8) + i
+//                    if(currentRandomCell !in cellIndicesToFill){
+//                        cellIndicesToFill.add(currentRandomCell)
+//                        break
+//                    }
+//                }
+//            }
+//
+//            // filling the cells
+//            for(cell in cellIndicesToFill){
+//                while(true){
+//                    val currentRandomValue = Random.nextInt(1..9)
+//                    if (Sudoku.isValidInput(sudokuParent, cell, currentRandomValue)){
+//
+//                        sudokuParent.findViewById<TextView>(cell).apply{
+//                            text = currentRandomValue.toString()
+//                            setTypeface(null, Typeface.BOLD)
+//                        }
+//                        break
+//                    }
+//
+//                }
+//            }
+//            initialisedCells.addAll(cellIndicesToFill)
+//        }
+//    }
 }
