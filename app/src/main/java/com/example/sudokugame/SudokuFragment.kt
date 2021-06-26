@@ -20,7 +20,7 @@ const val TAG = "SUDOKUFRAGMENT"
 class SudokuFragment : Fragment() {
 
     private var manualId = 1000
-    private var inFocus = object {
+    private val inFocus = object {
         var id = -1
         var previousBackground: Drawable? = null
     }
@@ -50,7 +50,10 @@ class SudokuFragment : Fragment() {
     private fun generateCellRow(): LinearLayout {
         val linearLayout = LinearLayout(context)
         linearLayout.apply{
-            layoutParams = VLParams(VLParams.WRAP_CONTENT, VLParams.WRAP_CONTENT)
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             orientation = LinearLayout.HORIZONTAL
         }
 
@@ -97,21 +100,7 @@ class SudokuFragment : Fragment() {
         return parent
     }
 
-    private fun gainFocus(v: TextView){
-        if (v.id in initialisedCells) return
-        inFocus.apply{
-            id = v.id
-            previousBackground = v.background
-        }
-        v.setBackgroundResource(R.drawable.cell_infocus)
-    }
 
-    fun loseFocus() {
-        inFocus.apply {
-            if(id == -1) return
-            sudokuParent.findViewById<TextView>(id).background = previousBackground
-        }
-    }
 
     private val cellOnClickListener = {v: View ->
         loseFocus()

@@ -1,9 +1,41 @@
 package com.example.sudokugame
 
+import android.graphics.drawable.Drawable
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import java.lang.IllegalStateException
+import java.lang.NullPointerException
 
-class Sudoku {
+class Sudoku (private val sudokuParent: ViewGroup){
+    private var manualId = 1000
+    private val inFocus = object {
+        var id: Int? = null
+        var background: Drawable? = null
+    }
+    private val initialisedCells = mutableSetOf<Int>()
+
+
+    private fun gainFocus(v: TextView){
+        if (v.id in initialisedCells) return
+        inFocus.apply{
+            id = v.id
+            background = v.background
+        }
+        v.setBackgroundResource(R.drawable.cell_infocus)
+    }
+
+    fun loseFocus() {
+        inFocus.apply {
+            try {
+                sudokuParent.findViewById<TextView>(id!!).background = background
+            }
+            catch(e: NullPointerException){
+                throw IllegalStateException("no cell is in focus", NullPointerException())
+            }
+        }
+    }
+
     companion object {
         private val squares = setOf(
             setOf(1000, 1001, 1002, 1009, 1010, 1011, 1018, 1019, 1020),
