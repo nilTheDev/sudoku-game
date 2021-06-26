@@ -217,8 +217,13 @@ class Sudoku(
 
     }
 
+    // validates the input in the
+    // current context by comparing the input
+    // with the content of other cells of the
+    // corresponding square, row and the column
     private fun isValidInput(cellId: Int, input: Int): Boolean {
 
+        // the indices of the squares
         val squares = setOf(
             setOf(1000, 1001, 1002, 1009, 1010, 1011, 1018, 1019, 1020),
             setOf(1003, 1004, 1005, 1012, 1013, 1014, 1021, 1022, 1023),
@@ -287,6 +292,5 @@ class Sudoku(
         return true
 
     }
-
 
 }
