@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import org.w3c.dom.Text
 import java.lang.IllegalStateException
 import java.lang.NullPointerException
-import java.util.zip.Inflater
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -24,15 +22,23 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         var background: Drawable? = null
     }
     private val initialisedCells = mutableSetOf<Int>()
-    val generateBox = {for(i in 0..2) sudokuParent.addView(generateSquareRow())}
+
+    // generate the whole sudoku box by
+    // generating three rows of three squares each
+    // and adding it into the LinearLayout of the view
+
+    fun generateBox() {
+        for(i in 0..2) sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper).addView(generateSquareRow())
+        autoFillPreliminaryValues()
+    }
 
 
     // returns a row of a square
     // i.e three cells, properly marked with ids, horizontally aligned
     // and wrapped in a LinearLayout
     private fun generateCellRow(): LinearLayout {
-        val linearLayout = LinearLayout(context)
-        linearLayout.apply{
+        val parentLayout = LinearLayout(context)
+        parentLayout.apply{
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -41,13 +47,13 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         }
 
         for (i in 0..2) {
-            val text = layoutInflater.inflate(R.layout.cells, linearLayout, false)
-            text.id = manualId++
-//            text.setOnClickListener(cellOnClickListener)
-            linearLayout.addView(text)
+            val cell = layoutInflater.inflate(R.layout.cells, parentLayout, false)
+            cell.id = manualId++
+            cell.setOnClickListener(cellOnClickListener)
+            parentLayout.addView(cell)
         }
 
-        return linearLayout
+        return parentLayout
     }
 
     // returns a row of the whole sudoku box wrapped in a
@@ -55,9 +61,9 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     // i.e three squares horizontally aligned
     // uses generateRow() nine times
     private fun generateSquareRow(): LinearLayout {
-        val parent = LinearLayout(context)
+        val parentLayout = LinearLayout(context)
         // the parent layout for creating the box row
-        parent.apply{
+        parentLayout.apply{
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -82,10 +88,10 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
             }
 
             for(j in i..8 step 3) square.addView(rows[j])
-            parent.addView(square)
+            parentLayout.addView(square)
         }
 
-        return parent
+        return parentLayout
     }
 
     // fills the preliminary cells to make the game playable
@@ -95,7 +101,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
     // randomly decides which cells to fill
     // fills the cells with randomly generated integers
     // uses Sudoku.isValidInput to avoid repetition
-    private fun generateBoard(){
+    private fun autoFillPreliminaryValues(){
         // iterating each row
         for (i in 1000..1080 step 9){
             val numOfCellsToFill = Random.nextInt(1..5)
@@ -131,7 +137,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         }
     }
 
-    fun gainFocus(cellId: Int){
+    private fun gainFocus(cellId: Int){
         if (cellId in initialisedCells) return
         val view = sudokuParent.findViewById<TextView>(cellId)
         inFocus.apply{
@@ -142,7 +148,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
 
     }
 
-    fun loseFocus() {
+    private fun loseFocus() {
         inFocus.apply {
             try {
                 sudokuParent.findViewById<TextView>(id!!).background = background
@@ -151,6 +157,11 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
                 throw IllegalStateException("no cell is in focus", NullPointerException())
             }
         }
+    }
+
+    private val cellOnClickListener = {v: View ->
+        loseFocus()
+        if(v is TextView) gainFocus(v.id)
     }
 
     // click listener for the input panel

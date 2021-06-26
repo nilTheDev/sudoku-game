@@ -1,31 +1,18 @@
 package com.example.sudokugame
 
 import android.annotation.SuppressLint
-import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import kotlin.random.Random
-import kotlin.random.nextInt
 
-import android.view.ViewGroup.LayoutParams as VLParams
+import android.widget.TextView
+
 
 const val TAG = "SUDOKUFRAGMENT"
 
 class SudokuFragment : Fragment() {
-
-    private var manualId = 1000
-    private val inFocus = object {
-        var id = -1
-        var previousBackground: Drawable? = null
-    }
-    private lateinit var sudokuParent: LinearLayout
-    private val initialisedCells = mutableSetOf<Int>()
 
     @SuppressLint("ResourceType")
     override fun onCreateView(
@@ -102,10 +89,10 @@ class SudokuFragment : Fragment() {
 
 
 
-    private val cellOnClickListener = {v: View ->
-        loseFocus()
-        if(v is TextView) gainFocus(v)
-    }
+//    private val cellOnClickListener = {v: View ->
+//        loseFocus()
+//        if(v is TextView) gainFocus(v)
+//    }
 
 
     private fun setInputOnClickListeners(parentLayout: View){
