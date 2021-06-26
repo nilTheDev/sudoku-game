@@ -49,7 +49,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         for (i in 0..2) {
             val cell = layoutInflater.inflate(R.layout.cells, parentLayout, false)
             cell.id = manualId++
-            cell.setOnClickListener(cellOnClickListener)
+            cell.setOnClickListener(::cellOnClickListener)
             parentLayout.addView(cell)
         }
 
@@ -137,18 +137,32 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         }
     }
 
+    // saves the previous style of the cell in the inFocus object
+    // and switches the style to cell_infocus
     private fun gainFocus(cellId: Int){
+        // whether the user clicked a cell
+        // that was automatically initialised
         if (cellId in initialisedCells) return
+
         val view = sudokuParent.findViewById<TextView>(cellId)
+
+        // make the inFocus object point the
+        // current cell
         inFocus.apply{
             id = view.id
             background = view.background
         }
+        // switch the style of the cell
+        // from default/right/wrong to infocus
         view.setBackgroundResource(R.drawable.cell_infocus)
 
     }
 
+    // restores the previous style of the cell that was saved in
+    // the inFocus object
     private fun loseFocus() {
+        // switch the style of cell that was already inFocused
+        // form inFocus to default/right/wrong
         inFocus.apply {
             try {
                 sudokuParent.findViewById<TextView>(id!!).background = background
@@ -159,26 +173,34 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
         }
     }
 
-    private val cellOnClickListener = {v: View ->
+    // de focus the cell that was previously inFocused
+    // in focus the cell that is clicked
+    private fun cellOnClickListener(cell: View) {
+        // deFocus from the cell that is already in focus
         loseFocus()
-        if(v is TextView) gainFocus(v.id)
+        // inFocus the currently clicked object
+        if(cell is TextView) gainFocus(cell.id)
     }
 
+
     // click listener for the input panel
-    fun cellInput(cellId: Int){
+    fun cellInput(inputId: Int){
+        val view = sudokuParent.findViewById<TextView>(inputId)
 
-        val view = sudokuParent.findViewById<TextView>(cellId)
+        try {
+            sudokuParent.findViewById<TextView>(inFocus.id!!).apply{
+                text = view.text
 
-        sudokuParent.findViewById<TextView>(inFocus.id!!).apply{
-            text = view.text
 
+                if(Sudoku.isValidInput(sudokuParent, id, view.text.toString().toInt())) setBackgroundResource(R.drawable.cell_right)
+                else setBackgroundResource(R.drawable.cell_wrong)
 
-            if(Sudoku.isValidInput(sudokuParent, id, view.text.toString().toInt())) setBackgroundResource(R.drawable.cell_right)
-            else setBackgroundResource(R.drawable.cell_wrong)
-
-            inFocus.background = background
+                inFocus.background = background
+            }
         }
-
+        catch (e: NullPointerException) {
+            return
+        }
     }
 
     companion object {
