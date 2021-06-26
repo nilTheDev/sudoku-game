@@ -3,13 +3,12 @@ package com.example.sudokugame
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import org.w3c.dom.Text
-import kotlin.properties.Delegates
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -20,7 +19,7 @@ class Sudoku(
 ) {
 
 
-    private var manualId by Delegates.notNull<Int>()
+    private var manualId = 1000
     private val inFocus = object {
         var id: Int? = null
         var background: Drawable? = null
@@ -28,6 +27,8 @@ class Sudoku(
     private val initialisedCells = mutableSetOf<Int>()
     val generateFreshBox
         get() = { _:View ->
+            manualId = 1000
+            initialisedCells.clear()
             sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper).removeAllViews()
             generateBox()}
 
@@ -51,7 +52,6 @@ class Sudoku(
     // generating three rows of three squares each
     // and adding it into the LinearLayout of the view
     private fun generateBox() {
-        manualId = 1000
         for (i in 0..2) sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper)
             .addView(generateSquareRow())
         autoFillPreliminaryValues()
