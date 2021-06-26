@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import org.w3c.dom.Text
 import kotlin.properties.Delegates
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -25,6 +26,13 @@ class Sudoku(
         var background: Drawable? = null
     }
     private val initialisedCells = mutableSetOf<Int>()
+    val generateFreshBox
+        get() = { _:View ->
+            sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper).removeAllViews()
+            generateBox()}
+
+    val solveBoard
+        get() = {_ : View -> autoSolve() }
 
     init {
         generateBox()
@@ -37,10 +45,7 @@ class Sudoku(
         }
     }
 
-    val generateFreshBox
-        get() = { _:View ->
-            sudokuParent.findViewById<LinearLayout>(R.id.sudoku_wrapper).removeAllViews()
-            generateBox()}
+
 
     // generate the whole sudoku box by
     // generating three rows of three squares each
@@ -198,10 +203,15 @@ class Sudoku(
     // iterates all the cells
     // validate in user inputs
     // sets background accordingly
-    private fun refreshBoard() {
-        for (i in 1000..1080) {
+    private fun refreshBoard(startIndex:Int = 1000, endIndex:Int = 1080) {
+        for (i in startIndex..endIndex) {
             val cell = sudokuParent.findViewById<TextView>(i)
-            if (i in initialisedCells || cell.text.toString() == "") continue
+            if (i in initialisedCells) continue
+
+            if(cell.text == "") {
+                cell.setBackgroundResource(R.drawable.cell_default)
+                continue
+            }
 
             if (isValidInput(
                     i,
@@ -298,6 +308,28 @@ class Sudoku(
 
         return true
 
+    }
+
+    private fun autoSolve(){
+        fun solveBoard(cellId: Int = 1000): Boolean{
+            if(cellId == 1081) return true
+
+            if(cellId in initialisedCells) return solveBoard(cellId + 1)
+
+            for(i in 1..9){
+                sudokuParent.findViewById<TextView>(cellId).text = i.toString()
+                refreshBoard(cellId,cellId)
+
+                if(!isValidInput(cellId, i)) continue
+
+                if(solveBoard(cellId + 1)) return true
+            }
+            sudokuParent.findViewById<TextView>(cellId).text = ""
+            refreshBoard(cellId, cellId)
+            return false
+        }
+
+        solveBoard()
     }
 
 }

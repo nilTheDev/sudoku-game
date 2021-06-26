@@ -25,6 +25,7 @@ class SudokuFragment : Fragment() {
         val parent = inflater.inflate(R.layout.fragment_sudoku, container, false) as ViewGroup
         sudoku = Sudoku(parent, requireContext(), inflater)
         parent.findViewById<Button>(R.id.re_generate_button).setOnClickListener(sudoku.generateFreshBox)
+        parent.findViewById<Button>(R.id.solve_button).setOnClickListener(sudoku.solveBoard)
         setInputOnClickListeners(parent)
         return parent
     }
