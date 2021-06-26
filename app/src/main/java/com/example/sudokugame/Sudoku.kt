@@ -172,7 +172,7 @@ class Sudoku (private val sudokuParent: ViewGroup, private val context: Context,
                 sudokuParent.findViewById<TextView>(id!!).background = background
             }
             catch(e: NullPointerException){
-                throw IllegalStateException("no cell is in focus", NullPointerException())
+                return
             }
         }
     }
