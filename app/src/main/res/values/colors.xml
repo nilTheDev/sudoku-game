@@ -7,13 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="cell_default_fill">#F4F7D4</color>
-    <color name="cell_initialised_fill">#CCD0A3</color>
-    <color name="cell_border">#092834</color>
-    <color name="cell_wrong_fill">#AAEF1111</color>
-    <color name="cell_right_fill">#AA77D732</color>
-    <color name="square_border">#092834</color>
+
+    <color name="cell_default_fill">#FFFFFF</color>
+    <color name="cell_wrong_fill">#ED254E</color>
+    <color name="cell_right_fill">#7DDF64</color>
+    <color name="border">#253031</color>
     <color name="parent_background">#B9FFFFFF</color>
-    <color name="cell_text_color">#092834</color>
-    <color name="cell_clicked_border">#092834</color>
+    <color name="text_color">#253031</color>
+
+    <color name="button_primary">#D972FF</color>
+    <color name="button_clicked">#9833BE</color>
 </resources>
